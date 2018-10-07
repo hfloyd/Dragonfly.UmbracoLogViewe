@@ -1,0 +1,174 @@
+@using Dragonfly.UmbracoLogViewer.Models
+
+@model LogItem
+
+@{
+    var siteTags = new List<string>();
+    siteTags.Add(Model.Host);
+    siteTags.AddRange(Model.SiteTags);
+
+    //Special Classes for Tags
+    //BOOTSTRAP COLOR OPTIONS: muted primary success info warning danger
+    var levelTagClasses = new Dictionary<string, string>()
+    {
+    { "INFO", "info"},
+    { "WARN", "warning"},
+    { "ERROR", "danger"},
+    { "Security", "danger"}
+    };
+
+    //Level
+    var levelTags = new List<string>();
+    levelTags.Add(Model.Level);
+    levelTags.AddRange(Model.LevelTags);
+
+    var pageUrl = Model.HasValidUrlPath ? string.Format("http://{0}{1}", Model.Host, Model.UrlPath) : "";
+
+    //Resolve Item Buttons
+    var markAsResolvedClass = Model.Resolved ? "disabled" : "";
+    var markAsUnresolvedClass = !Model.Resolved ? "disabled" : "";
+    var resolutionUrl = string.Format("{0}/Umbraco/backoffice/Api/AuthorizedApi/UpdateLogItemResolution?LogId={1}", Dragonfly.NetHelpers.Info.ThisSiteDomain(), Model.Id);
+    var markAsResolvedUrl = Dragonfly.NetHelpers.Url.AppendQueryStringToUrl(resolutionUrl, "Resolved", "true");
+    var markAsUnresolvedUrl = Dragonfly.NetHelpers.Url.AppendQueryStringToUrl(resolutionUrl, "Resolved", "false");
+
+    //Column Widths
+    var col1Class = "col-sm-1";
+    var col2Class = @"col-sm-11";
+}
+
+<style>
+    dl {
+        border-width: 1px 0;
+        border-radius: 0;
+    }
+</style>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="@col1Class">
+                @if (Model.Resolved)
+                {
+                    <h2 class="resolution-status">
+                        <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" style="font-size: 30px; color: #5cb85c;"></span>
+                        <span class="sr-only">Resolved</span>
+                    </h2>
+                }
+                else
+                {
+                    <h2 class="resolution-status text-muted">
+                        <span class="glyphicon glyphicon-ban-circle" aria-hidden="true" style="font-size: 30px;"></span>
+                        <span class="sr-only">Not Yet Resolved</span>
+                    </h2>
+                }
+            </div>
+            <div class="@col2Class">
+                <h2>Log Item # @Model.Id</h2>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <dl class="row">
+            <dt class="@col1Class">Date/Time</dt>
+            <dd class="@col2Class">@Model.Date</dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="@col1Class">Url</dt>
+            <dd class="@col2Class">
+                @if (pageUrl != "")
+                {
+                    <a href="@pageUrl" target="_blank">@pageUrl</a>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="@col1Class">Level</dt>
+            <dd class="@col2Class">@RenderTags(levelTags, levelTagClasses)</dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="@col1Class">Site</dt>
+            <dd class="@col2Class">@RenderTags(siteTags, null)</dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="@col1Class">Type</dt>
+            <dd class="@col2Class">@Model.Logger</dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="@col1Class">Message</dt>
+            <dd class="@col2Class">@Model.Message</dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="@col1Class">Exception</dt>
+            <dd class="@col2Class"><pre>@Model.Exception</pre></dd>
+        </dl>
+        @*<dl class="row">
+                <dt class="@col1Class">Message</dt>
+                <dd class="@col2Class">@Model.Message</dd>
+            </dl>*@
+    </div>
+
+    @*
+
+            <ul class="list-group">
+                <li class="list-group-item"><dt>Coffee</dt> <dd>Black hot drink</dd></li>
+                <li class="list-group-item"><dt>Milk</dt>        <dd>White cold drink</dd></li>
+            </ul>
+        <ul class="list-group">
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+        </ul>*@
+</div>
+
+
+<div class="btn-group" data-toggle="buttons">
+    <a class="btn btn-success btn @markAsResolvedClass" role="button" href="@markAsResolvedUrl">Resolve Item</a>
+    <a class="btn btn-default btn @markAsUnresolvedClass" role="button" href="@markAsUnresolvedUrl">Mark As Unresolved</a>
+</div>
+<div class="alert alert-warning alert-dismissible fade in" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <strong>NOTE</strong> 'Resolve Item' & 'Mark as Unresolved' buttons are not functional yet.
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled Bootstrap plugins  -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+@helper RenderTags(IEnumerable<string>
+    TagData, Dictionary<string, string>
+        TagClasses)
+        {
+        if (TagData != null && TagData.Any())
+        {
+        foreach (var tag in TagData)
+        {
+        var tagHtml = "";
+        var tagClass = "label label-default";
+
+        if (TagClasses != null)
+        {
+        var match = TagClasses.ContainsKey(tag) ? TagClasses[tag] : "";
+        if (match != "")
+        {
+        tagClass = string.Format("label label-{0}", match);
+        }
+        }
+
+        <span class="@tagClass">@tag</span>
+        }
+        }
+        }

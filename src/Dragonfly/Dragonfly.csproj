@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net45</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Copyright>Heather Floyd [www.HeatherFloyd.com]</Copyright>
+    <RepositoryType>GIT</RepositoryType>
+    <Authors>Heather Floyd</Authors>
+    <Company></Company>
+    <Product>Dragonfly</Product>
+    <Description>A tool for storing Umbraco log entries in a database and viewing them in a tabular format (min Umbraco version 7.8)</Description>
+    <PackageLicenseUrl>https://github.com/hfloyd/Dragonfly.UmbracoLogViewer/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/hfloyd/Dragonfly.UmbracoLogViewer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hfloyd/Dragonfly.UmbracoLogViewer</RepositoryUrl>
+    <PackageId>Dragonfly.UmbracoLogViewer</PackageId>
+    <AssemblyName>Dragonfly.UmbracoLogViewer</AssemblyName>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+  </ItemGroup>
+  <ItemGroup>
+  <Content Include="Views/**/*.*">
+    <Pack>true</Pack>
+    <BuildAction>Content</BuildAction>
+    <IncludeInPackage>true</IncludeInPackage>
+    <CopyToOutput>true</CopyToOutput>
+  </Content>
+  <Content Include="config/**/*.*">
+    <Pack>true</Pack>
+    <BuildAction>Content</BuildAction>
+    <IncludeInPackage>true</IncludeInPackage>
+    <CopyToOutput>true</CopyToOutput>
+  </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Dragonfly.Net" Version="1.10.2" />
+    <PackageReference Include="Dragonfly.Umbraco7" Version="1.5.11" />
+    <PackageReference Include="UmbracoCms.Core" Version="7.8.0" />
+  </ItemGroup>
+  <Import Project="..\Custom.targets" />
+</Project>
