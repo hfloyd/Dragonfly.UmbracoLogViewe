@@ -2,7 +2,10 @@
 
 A tool for storing Umbraco log entries in a database and viewing them in a tabular format created by [Heather Floyd](https://www.HeatherFloyd.com).
 
-Available on NuGet: `Install-Package Dragonfly.UmbracoLogViewer`
+## Installation ##
+[![Nuget Downloads](https://buildstats.info/nuget/Dragonfly.UmbracoLogViewer)](https://www.nuget.org/packages/Dragonfly.UmbracoLogViewer/)
+
+    PM > Install-Package Dragonfly.UmbracoLogViewer
 
 ## Database Setup ##
 
